@@ -1,0 +1,63 @@
+module.exports = function(grunt)
+{
+
+	grunt.initConfig(
+	{
+		watch:
+		{
+			jade:
+			{
+				files:['views/**'],
+				options:
+				{
+					livereload: true
+				}
+			},
+			js:
+			{
+				files:['public/js/**','models/**/*.js','schemas/**/*.js'],
+				//tasks:['jshint'],
+				options:
+				{
+					livereload:true
+				}
+			}
+		},
+		nodemon:
+		{
+			dev:
+			{
+				options:
+				{
+					file:'app.js',
+					args:[],
+					ignoredFiles:['README.md','node_module/**','DS_Store'],
+					watchedExtensions:['js'],
+					watchedFolders:['./'],
+					debug:true,
+					delayTime:1,
+					env:
+					{
+						PORT:3000
+					},
+					cwd: __dirname
+				}
+			}
+		},
+		concurrent:
+		{
+			tasks:['nodemon','watch'],
+			options:
+			{
+				logConcurrentOutput:true
+			}
+		}
+	})
+	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-nodemon');
+	grunt.loadNpmTasks('grunt-concurrent');
+
+	grunt.option('force',true);//配置这个的目的是防止在开发的过程中
+							   //因为语法的错误而中断了整个的grunt服务
+	grunt.registerTask('default',['concurrent']);
+}
