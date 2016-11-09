@@ -23,7 +23,7 @@ module.exports = function(app)
 	//user
 	app.post('/user/signup',User.signup);
 	app.get('/signin',User.showSignin);
-	app.post('/signup',User.showSignup);
+	app.get('/signup',User.showSignup);
 	app.get('/admin/userlist',User.userlist);
 	app.post('/user/signin',User.signin);
 	app.get('/logout',User.logout);

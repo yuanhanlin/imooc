@@ -70,17 +70,22 @@ Userschema.methods =
 {
 	comparePassword:function(_password,cb)
 	{
-		console.error(_password," ",this.password);
+		console.error(_password,"<--> ",this.password);
 		bcrypt.compare(_password,this.password,function(err,isMatch)
 		{
 			if (err) 
 			{
+				console.log(err);
 				return cb(err);
 			}
 			if (isMatch)
 			{
-				console.log('bcryt compare metched')
-				cb(null,isMatch);
+				console.log('bcryt compare metched');
+				return cb(null,isMatch);
+			} else
+			{
+				console.log('bcrypt compare is not matched');
+				return cb(null,isMatch);
 			}
 		})
 	}
