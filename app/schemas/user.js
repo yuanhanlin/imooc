@@ -11,6 +11,18 @@ var Userschema = new mongoose.Schema(
 		type:String,
 	},
 	password:String,
+	//user role
+	//0-->normal user
+	//1-->verified uesr
+	//2-->advanced user
+	//3-9--> ready to use
+	//10-->admin
+	//50-->super admin
+	role:
+	{
+		type:Number,
+		default:0,
+	},
 	meta:
 	{
 		createAt:

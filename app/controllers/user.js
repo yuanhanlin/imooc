@@ -63,7 +63,7 @@ exports.userlist = function(req,res)
 			title:'Imooc 用户列表',
 			users:users,
 		})
-	})
+	})	
 }
 
 exports.signin = function(req,res)
@@ -113,4 +113,26 @@ exports.logout = function(req,res)
 	delete req.session.user;
 //	delete app.locals.user;
 	res.redirect('/');
+}
+
+//登录控制中间件
+exports.signinRequired = function(req,res,next)
+{
+	var user = req.session.user;
+	if (!user)
+	{
+		return res.redirect('/signin');
+	}
+	next();
+}
+
+//权限控制中间件
+exports.adminRequired = function(req,res,next)
+{
+	var user = req.session.user;
+	if (user.role <= 10 || !user.role)
+	{
+		return res.redirect('/signin');
+	}
+	next();
 }

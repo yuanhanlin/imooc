@@ -1,4 +1,5 @@
 var Movie = require('../models/movie');
+var Comment = require('../models/comment');
 var _=require('underscore');
 	//detail
 	exports.detail = function(req,res)
@@ -15,11 +16,22 @@ var _=require('underscore');
 		 */
 		Movie.findById(id,function(err,movie)
 		{
-			res.render('detail',
+			Comment.find(
 			{
-				title:'Imooc' + movie.title,
-				movie:movie,
+				movie:id,
+			}).populate('from','name')
+			.populate('reply.from reply.to','name')
+			.exec(function(err,comments)
+			{
+				console.log(comments);
+				res.render('detail',
+				{
+					title:'Imooc' + movie.title,
+					movie:movie,
+					comments:comments,
+				})
 			})
+			
 		});
 	}
 	//admin update movie
@@ -92,9 +104,9 @@ var _=require('underscore');
 
 	exports.new = function(req,res)
 	{
-		res.render('admin',
+		res.render('newMovie',
 		{
-			title:'imooc 后台录入页',
+			title:'imooc 后台电影录入页',
 			movie:
 			{
 				title:'',
@@ -105,7 +117,6 @@ var _=require('underscore');
 				flash:'',
 				summary:'',
 				language:''
-
 			}
 		})
 	}

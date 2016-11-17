@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var ObjectID = require('mongodb').ObjectID;
+var ObjectId = require('mongodb').ObjectId;
 
 var MovieSchema = new mongoose.Schema(
 {
@@ -51,7 +51,7 @@ MovieSchema.statics =
 	},
 	findById: function(id,cb)
 	{
-		return this.findOne({_id:ObjectID(id)})
+		return this.findOne({_id:ObjectId(id)})
 		.exec(cb)
 	}
 }
