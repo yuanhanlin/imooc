@@ -1,5 +1,6 @@
 var Movie = require('../models/movie');
 var Comment = require('../models/comment');
+var Category = require('../models/category');
 var _=require('underscore');
 	//detail
 	exports.detail = function(req,res)
@@ -59,7 +60,7 @@ var _=require('underscore');
 		var movieObj = req.body.movie;
 		console.log(movieObj);
 		var _movie;
-		if (id!=='undefined')
+		if (id)
 		{
 			Movie.findById(id,function(err,movie)
 			{
@@ -79,7 +80,7 @@ var _=require('underscore');
 			})
 		} else
 		{
-			_movie = new Movie(
+			/*_movie = new Movie(
 			{
 				doctor:movieObj.doctor,
 				title:movieObj.title,
@@ -89,36 +90,51 @@ var _=require('underscore');
 				poster:movieObj.poster,
 				summary:movieObj.summary,
 				flash:movieObj.flash,
-			})
+				category:movieObj.category,
+			})*/
+			_movie = new Movie(movieObj);
+			var categoryId = _movie.category;
 			_movie.save(function(err,movie)
 			{
 				if (err)
 				{
 					console.log(err);
 				}
-
-				res.redirect('/movie/'+movie._id);
+				Category.findById(categoryId,function(err,category)
+				{
+					console.log("---->"+category.name+"<---");
+					category.movies.push(movie._id);
+					category.save(function(err,category)
+					{
+						res.redirect('/movie/'+movie._id);
+					})
+				})
 			})
 		}
 	}
 
 	exports.new = function(req,res)
 	{
-		res.render('newMovie',
+		Category.fetch(function(err,categories)
 		{
-			title:'imooc 后台电影录入页',
-			movie:
+			res.render('newMovie',
 			{
-				title:'',
-				doctor:'',
-				country:'',
-				year:'',
-				poster:'',
-				flash:'',
-				summary:'',
-				language:''
-			}
+				title:'imooc 后台电影录入页',
+				movie:
+				{
+					title:'',
+					doctor:'',
+					country:'',
+					year:'',
+					poster:'',
+					flash:'',
+					summary:'',
+					language:'',
+				},
+				categories:categories,
+			})
 		})
+		
 	}
 	
 	exports.list = function(req,res)
