@@ -1,3 +1,7 @@
+/*
+	切记缺少前台页面的数据格式验证，输入错误的数据格式会导致系统崩溃，应在后期加入前台数据格式的验证。
+ */
+
 var Movie = require('../models/movie');
 var Comment = require('../models/comment');
 var Category = require('../models/category');
@@ -41,14 +45,19 @@ var _=require('underscore');
 		var id = req.params.id;
 		if (id)
 		{
-			Movie.findById(id,function(err,movie)
+			Category.find({},function(err,categories)
 			{
-				res.render('admin',
+				Movie.findById(id,function(err,movie)
 				{
-					title:'imooc 后台更新',
-					movie:movie,
+					res.render('newMovie',
+					{
+						title:'imooc 后台更新',
+						movie:movie,
+						categories:categories
+					})
 				})
 			})
+			
 		}
 	}
 	
@@ -58,7 +67,7 @@ var _=require('underscore');
 		var id = req.body.movie._id;
 		console.log(id);
 		var movieObj = req.body.movie;
-		console.log(movieObj);
+		//console.log(movieObj);
 		var _movie;
 		if (id)
 		{
@@ -75,8 +84,11 @@ var _=require('underscore');
 					{
 						console.log(err);
 					}
-					res.redirect('/movie/'+movie._id);
+					
 				})
+
+
+				res.redirect('/movie/'+movie._id);
 			})
 		} else
 		{
@@ -93,22 +105,46 @@ var _=require('underscore');
 				category:movieObj.category,
 			})*/
 			_movie = new Movie(movieObj);
-			var categoryId = _movie.category;
+			var categoryId = movieObj.category;
+			var categoryName = movieObj.categoryName;
+			console.log('---movieObj.category->'+movieObj.category+'<----');
+			console.log('---movieObj.categoryName->'+movieObj.categoryName+'<----');
 			_movie.save(function(err,movie)
 			{
 				if (err)
 				{
 					console.log(err);
 				}
-				Category.findById(categoryId,function(err,category)
+				//console.log(movie);
+				if (categoryId)
 				{
-					console.log("---->"+category.name+"<---");
-					category.movies.push(movie._id);
+					Category.findById(categoryId,function(err,category)
+					{
+						//console.log("---->"+category.name+"<---");
+						//console.log("---->"+movie._id+"<---");
+						category.movies.push(movie._id);
+						category.save(function(err,category)
+						{
+							res.redirect('/movie/'+ movie._id);
+						})
+					})
+				} else if (categoryName)
+				{
+					var category = new Category(
+					{
+						name:categoryName,
+						movies:[movie._id],
+					});
 					category.save(function(err,category)
 					{
-						res.redirect('/movie/'+movie._id);
+						movie.category = category._id; 
+						movie.save(function(err,movie)
+						{
+							res.redirect('/movie/'+ movie._id);
+						})
+						
 					})
-				})
+				}
 			})
 		}
 	}
