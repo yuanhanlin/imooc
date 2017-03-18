@@ -9,7 +9,7 @@ var CategorySchema = new mongoose.Schema(
 	movies:[
 	{
 		type:ObjectId,
-		ref:'Movie'
+		ref:'Movie',
 	}],
 	description:String,
 	meta:

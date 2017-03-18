@@ -12,11 +12,22 @@ var MovieSchema = new Schema(
 	poster:String,
 	flash:String,
 	year:Number,
+	pv:
+	{
+		type: Number,
+		default: 0,
+	},
 	category:
 	{
 		type:ObjectId,
 		ref:"Category",
 	},
+	//保存被那些用户收藏了。
+	collectedUsers:[
+	{
+		type:ObjectId,
+		ref:'User',
+	}],
 	meta:
 	{
 		createAt:

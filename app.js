@@ -26,6 +26,8 @@ app.set('view engine','jade');
 app.use(bodyParse.json({limit:'1mb'}));
 app.use(bodyParse.urlencoded({extended: true}));
 app.use(cookieParser('imooc'));
+//app.use(require('multer')());
+app.use(require('connect-multiparty')());
 app.use(session(
 {
 	secrect:'imooc',
@@ -34,6 +36,7 @@ app.use(session(
 		url: 'mongodb://localhost/imooc',
 		collection: 'sessions',
 	}),
+	cookie: {maxAge: 1000 * 60 * 5},
 	resave:false,
 	saveUninitialized:true,
 	

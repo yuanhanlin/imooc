@@ -35,4 +35,30 @@ $(function()
 			}).appendTo('#commentForm');
 		}		
 	})
+	$('#putInCollection').click(function(e)
+	{
+		var $target = $(this);
+		var mid = $target.data('mid');
+		console.log("the "+ mid +" movie will be collected");
+		$.ajax(
+		{
+			type:'POST',
+			url:'/user/collectMovie',
+			dataType:'json',
+			data:
+			{
+				mid:mid,
+			}
+		}).done(function(result)
+		{
+			if (result.status == 'success')
+			{
+				console.log('收藏成功');
+				//$('#putInCollection').html('已收藏')
+			} else
+			{
+				console.log('失败，可能是登录超时，请重新登录。');
+			}
+		})
+	})
 })
